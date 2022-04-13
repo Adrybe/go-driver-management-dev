@@ -31,7 +31,7 @@ func CreateAdmin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	db, err := repository.NewRepository()
 	if err != nil {
-		log.Fatal(http.StatusInternalServerError)
+		log.Fatal(err)
 	}
 	var admin dto.Admin
 	err = json.NewDecoder(r.Body).Decode(&admin)
@@ -43,6 +43,7 @@ func CreateAdmin(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("%+v", result)
 
+	defer db.Close()
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(dto.Response{Description: "Admin creado"})
 }
