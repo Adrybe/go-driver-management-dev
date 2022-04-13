@@ -1,18 +1,11 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"os"
+	app "github.com/Adrybe/go-driver-management-dev/internal/processor"
+	"net/http"
 )
 
 func main() {
-	port := os.Getenv("PORT")
-	port = ":" + port
-
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.String(200, "message : pong")
-	})
-
-	r.Run()
+	port, app := app.SetUpApp()
+	http.ListenAndServe(port, app)
 }
