@@ -12,17 +12,7 @@ func NewRepository() (*sql.DB, error) {
 		log.Fatal(err)
 	}
 
-	createTables(db)
-
 	defer db.Close()
 
 	return db, err
-}
-
-func createTables(db *sql.DB) {
-	_, err := db.Exec(`CREATE TABLE [IF NOT EXISTS] administrators (id text primary key, username text, adminpassword text, authorized text);
-	CREATE TABLE [IF NOT EXISTS] drivers (id text primary key, username text, adminpassword text, driving text);`)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
