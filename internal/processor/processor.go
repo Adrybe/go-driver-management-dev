@@ -2,6 +2,7 @@ package processor
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Adrybe/go-driver-management-dev/internal/repository"
 	"github.com/Adrybe/go-driver-management-dev/pkg/dto"
 	"github.com/google/uuid"
@@ -19,6 +20,11 @@ type (
 		r *http.Request
 	}
 )
+
+func Home(w http.ResponseWriter, r *http.Request) {
+	log.Println("Endpoint Hit: home")
+	fmt.Fprintf(w, "Welcome to the home page!")
+}
 
 func CreateAdmin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")

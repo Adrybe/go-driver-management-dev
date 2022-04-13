@@ -10,6 +10,7 @@ func SetUpApp() (string, *mux.Router) {
 	port = ":" + port
 
 	r := mux.NewRouter()
+	r.HandleFunc("/", Home).Methods("GET")
 	r.HandleFunc("/{admin:admin\\/?}", CreateAdmin).Methods("POST")
 	return port, r
 }
