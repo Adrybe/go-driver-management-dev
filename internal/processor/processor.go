@@ -6,6 +6,7 @@ import (
 	"github.com/Adrybe/go-driver-management-dev/internal/repository"
 	"github.com/Adrybe/go-driver-management-dev/pkg/dto"
 	"github.com/google/uuid"
+	_ "github.com/lib/pq"
 	"log"
 	"net/http"
 )
