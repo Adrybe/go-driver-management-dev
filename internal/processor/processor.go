@@ -1,6 +1,11 @@
 package processor
 
 import (
+	"encoding/json"
+	"github.com/Adrybe/go-driver-management-dev/internal/repository"
+	"github.com/Adrybe/go-driver-management-dev/pkg/dto"
+	"github.com/google/uuid"
+	"log"
 	"net/http"
 )
 
@@ -15,24 +20,21 @@ type (
 	}
 )
 
-/*func CreateAdmin(w http.ResponseWriter, r *http.Request) {
+func CreateAdmin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	client := repository.NewRepository()
-	db := client.Driver()
-	col := db.Collection("barberos")
-
-	barbero, err := validateBarbero(r)
-
+	client, err := repository.NewRepository()
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.Response{Description: "Request invalida"})
-		return
+		log.Fatal(http.StatusInternalServerError)
+	}
+	var admin dto.Admin
+	err = json.NewDecoder(r.Body).Decode(&admin)
+	id := uuid.New().String()
+	errr := client.QueryRow(`INSERT INTO "administrators"(id,username,adminpassword,authorized)
+    VALUES($1,$2,$3,$4) RETURNS id`, id, admin.UserName, admin.Password, "PENDING")
+	if errr != nil {
+		log.Fatal(http.StatusInternalServerError)
 	}
 
-	_, err = col.InsertOne(context.Background(), barbero)
-	if err != nil {
-		log.Fatal(err)
-	}
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(models.Response{Description: "Barbero creado"})
-}*/
+	json.NewEncoder(w).Encode(dto.Response{Description: "Admin creado"})
+}
