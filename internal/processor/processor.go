@@ -35,8 +35,8 @@ func CreateAdmin(w http.ResponseWriter, r *http.Request) {
 	var admin dto.Admin
 	err = json.NewDecoder(r.Body).Decode(&admin)
 	id := uuid.New().String()
-	errr := client.QueryRow(`INSERT INTO "administrators"(id,username,adminpassword,authorized)
-    VALUES($1,$2,$3,$4) RETURNS id`, id, admin.UserName, admin.Password, "PENDING")
+	errr := client.QueryRow(`INSERT INTO public.administrators(id, username, adminpassword, authorized)
+    VALUES($1, $2, $3, $4);`, id, admin.UserName, admin.Password, "PENDING")
 	if errr != nil {
 		log.Fatal(http.StatusInternalServerError)
 	}
