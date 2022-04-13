@@ -29,15 +29,19 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 func CreateAdmin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	client, err := repository.NewRepository()
+	db, err := repository.NewRepository()
 	if err != nil {
 		log.Fatal(http.StatusInternalServerError)
 	}
 	var admin dto.Admin
 	err = json.NewDecoder(r.Body).Decode(&admin)
 	id := uuid.New().String()
-	client.Exec(`INSERT INTO public.administrators(id, username, adminpassword, authorized)
+	result, err := db.Exec(`INSERT INTO public.administrators(id, username, adminpassword, authorized)
     VALUES($1, $2, $3, $4);`, id, admin.UserName, admin.Password, "PENDING")
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("%+v", result)
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(dto.Response{Description: "Admin creado"})
