@@ -31,7 +31,7 @@ func CreateAdmin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	db, err := repository.NewRepository()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("error geting the DB: %s", err)
 	}
 	var admin dto.Admin
 	err = json.NewDecoder(r.Body).Decode(&admin)
@@ -39,7 +39,7 @@ func CreateAdmin(w http.ResponseWriter, r *http.Request) {
 	result, err := db.Exec(`INSERT INTO public.administrators(id, username, adminpassword, authorized)
     VALUES($1, $2, $3, $4);`, id, admin.UserName, admin.Password, "PENDING")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("error inserting a new admin: %s", err)
 	}
 	log.Printf("%+v", result)
 
