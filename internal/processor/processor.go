@@ -120,10 +120,6 @@ func SignInAdmin(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("error parsing request body: %+v", err)
 	}
 
-	if err != nil {
-		log.Fatalf("error parsing request header: %+v", err)
-	}
-
 	result, err := db.Query(`SELECT *
 		FROM public.administrators
 		WHERE username = $1;`, request.UserName)
@@ -144,12 +140,13 @@ func SignInAdmin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("resultado: %+v", result)
+	log.Printf("DbAdmin: %+v", admin)
+	log.Printf("RequestAdmin: %+v", request)
+	log.Printf("passwordverifed: %v", passwordVerifier(admin, request))
 
 	if passwordVerifier(admin, request) {
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(admin)
 		json.NewEncoder(w).Encode(dto.Response{Description: "Signin exitoso."})
-		defer db.Close()
 		return
 	}
 	defer db.Close()
