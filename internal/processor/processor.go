@@ -148,6 +148,8 @@ func SignInAdmin(w http.ResponseWriter, r *http.Request) {
 	if passwordVerifier(admin, request) {
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(admin)
+		json.NewEncoder(w).Encode(dto.Response{Description: "Signin exitoso."})
+		return
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 	json.NewEncoder(w).Encode(dto.Response{Description: "Error en la password."})
