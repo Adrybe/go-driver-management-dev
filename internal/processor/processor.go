@@ -145,7 +145,7 @@ func SignInAdmin(w http.ResponseWriter, r *http.Request) {
 	log.Printf("passwordverifed: %v", passwordVerifier(admin, request))
 
 	if passwordVerifier(admin, request) {
-		w.WriteHeader(http.StatusCreated)
+		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(dto.Response{Description: "Signin exitoso."})
 		return
 	}
