@@ -143,14 +143,16 @@ func SignInAdmin(w http.ResponseWriter, r *http.Request) {
 		log.Printf("el administrador encontrado es %+v", admin)
 	}
 
-	log.Printf("%+v", result)
-	defer db.Close()
+	log.Printf("resultado: %+v", result)
+
 	if passwordVerifier(admin, request) {
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(admin)
 		json.NewEncoder(w).Encode(dto.Response{Description: "Signin exitoso."})
+		defer db.Close()
 		return
 	}
+	defer db.Close()
 	w.WriteHeader(http.StatusUnauthorized)
 	json.NewEncoder(w).Encode(dto.Response{Description: "Error en la password."})
 }
