@@ -105,3 +105,54 @@ func GetAdmin(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(admin)
 }
+
+func SignInAdmin(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	db, err := repository.NewRepository()
+	if err != nil {
+		log.Fatalf("error geting the DB: %s", err)
+	}
+
+	var request dto.Admin
+	err = json.NewDecoder(r.Body).Decode(&request)
+
+	if err != nil {
+		log.Fatalf("error parsing request body: %+v", err)
+	}
+
+	if err != nil {
+		log.Fatalf("error parsing request header: %+v", err)
+	}
+
+	result, err := db.Query(`SELECT *
+		FROM public.administrators
+		WHERE username = $1;`, request.UserName)
+	if err != nil {
+		log.Fatalf("error fetching admin: %s", err)
+	}
+	var admin Admin
+	for result.Next() {
+		var id, username, adminpassword, authorized string
+		result.Scan(&id, &username, &adminpassword, &authorized)
+		admin = Admin{
+			Id:         id,
+			UserName:   username,
+			Password:   adminpassword,
+			Authorized: authorized,
+		}
+		log.Printf("el administrador encontrado es %+v", admin)
+	}
+
+	log.Printf("%+v", result)
+	defer db.Close()
+	if passwordVerifier(admin, request) {
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(admin)
+	}
+	w.WriteHeader(http.StatusUnauthorized)
+	json.NewEncoder(w).Encode(dto.Response{Description: "Error en la password."})
+}
+
+func passwordVerifier(dbUser Admin, requestUser dto.Admin) bool {
+	return dbUser.Password == requestUser.Password
+}
