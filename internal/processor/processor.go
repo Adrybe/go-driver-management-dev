@@ -151,7 +151,7 @@ func SignInAdmin(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 	w.WriteHeader(http.StatusUnauthorized)
-	json.NewEncoder(w).Encode(dto.Response{Description: "Error en la password."})
+	json.NewEncoder(w).Encode(dto.Response{Description: "Usuario o contraseña incorrecto."})
 }
 
 func passwordVerifier(dbUser Admin, requestUser dto.Admin) bool {

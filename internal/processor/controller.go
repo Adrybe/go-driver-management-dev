@@ -14,5 +14,6 @@ func SetUpApp() (string, *mux.Router) {
 	r.HandleFunc("/admin/{user_name}", GetAdmin).Methods("GET")
 	r.HandleFunc("/admin/signin", SignInAdmin).Methods("POST")
 	r.HandleFunc("/admin", CreateAdmin).Methods("POST")
+	//http.Handle("/admin", EnsureValidToken(r))
 	return port, r
 }
